@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import { BASE_URL } from '../constants/BASE_URL'
 import axios from 'axios'
 
 
-
-export default function useRequestData(estadoInicial, path) {
+//Pegamos nossa url de Authorization atráves do headers.
+export default function useRequestData(estadoInicial, path, headers) {
 
     const [dados, setDados] = useState(estadoInicial)
     const [erro, setErro] = useState('')
 
     const receberDados = () =>{
-        axios.get(`${BASE_URL}${path}`)
+        // Pegamos ela(Authirization) atráves do get e definimos ela para as demais páginas. No caso para ser possível acessar o conteúdo a pessoa necessita ter um token de acesso.
+        axios.get(`${BASE_URL}${path}`, headers)
         .then((resposta) => {
             setDados(resposta.data)
         })

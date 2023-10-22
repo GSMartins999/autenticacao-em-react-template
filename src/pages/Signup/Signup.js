@@ -1,9 +1,18 @@
 import React from 'react'
 import useForms from '../../hooks/useForms'
 import { ContainerForm, ContainerSignup, Input } from './styled'
+import axios from 'axios'
+import {BASE_URL} from "../../constants/BASE_URL"
+import { irParaFeed } from '../../routes/coordinator'
+import { useNavigate } from 'react-router-dom'
+
+
 
 export default function Signup() {
+
     const { form, onChange } = useForms({ email: "", senha: "", nomeUsuario: "", confirmaSenha: "" })
+
+    const navigate = useNavigate()
 
     const enviarCadastro = (e) => {
         e.preventDefault()
@@ -16,6 +25,18 @@ export default function Signup() {
                 password: form.senha
             }
             console.log(dadosUsuario)
+            //Abaixo fizemos o cadastro do usuário e atribuimos um token para ele.
+            axios.post(`${BASE_URL}/users/signup`, dadosUsuario)
+            .then((response)=>{
+                console.log(response.data.token);
+                //Abaixo armazenamos o token do user no local storage.
+                localStorage.setItem("token", response.data.token)
+                alert("Cadastro feito com sucesso, por favor aguarde uns segundinhos!")
+                irParaFeed(navigate)
+            })
+            .catch((error) => {
+                console.log(error.response);
+            })
         } else {
             alert("Digite a mesma senha nos campos 'senha' e 'confirmação de senha'")
         }

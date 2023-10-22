@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import useForms from '../../hooks/useForms'
 
 import { ContainerForm, ContainerLogin, Input } from './styled'
-import { irParaCadastro } from '../../routes/coordinator'
+import { irParaCadastro, irParaFeed } from '../../routes/coordinator'
+import { BASE_URL } from '../../constants/BASE_URL'
+import axios from 'axios'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -13,6 +15,15 @@ export default function Login() {
   const enviaLogin = (e) => {
     e.preventDefault()
     console.log(form)
+    axios.post(`${BASE_URL}/users/login`, form)
+    .then((response)=>{
+      console.log(response.data.token);
+      localStorage.setItem("token", response.data.token)
+      irParaFeed(navigate)
+    })
+    .catch((error)=>{
+      console.log(error.response)
+    })
   }
 
   return (
@@ -35,6 +46,7 @@ export default function Login() {
           onChange={onChange}
           placeholder="Digite sua senha"
           required
+          type='password'
         />
         <button>Fazer Login</button>
       </ContainerForm>
